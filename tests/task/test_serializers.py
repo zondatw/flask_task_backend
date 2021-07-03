@@ -9,30 +9,33 @@ class TestTaskListSerializer:
     def setup_class(self):
         self.serializer = TaskListSerializer()
 
-    def test_validate(self):
+    def test_validate(self, app):
         # status not in range 0~1
-        with pytest.raises(ValidationError):
+        with pytest.raises(ValidationError) as err:
             self.serializer.load({
                 "id": 1,
                 "name": "test",
                 "status": 2
             })
+        assert "{'status': ['Must be greater than or equal to 0 and less than or equal to 1.']}" in str(err)
 
         # name max length is 100 
-        with pytest.raises(ValidationError):
+        with pytest.raises(ValidationError) as err:
             self.serializer.load({
                 "id": 1,
                 "name": "t" * 101,
                 "status": 1
             })
+        assert "{'name': ['Length must be between 1 and 100.']}" in str(err)
 
         # name min length is 1 
-        with pytest.raises(ValidationError):
+        with pytest.raises(ValidationError) as err:
             self.serializer.load({
                 "id": 1,
                 "name": "",
                 "status": 1
             })
+        assert "{'name': ['Length must be between 1 and 100.']}" in str(err)
 
     def test_dump(self):
         task = Task(id=1, name="test", status=True)

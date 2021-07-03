@@ -26,6 +26,18 @@ FLASK_ENV=development
 DATABASE_URL=mysql+pymysql://root:password@db:3306/ExerciseDB
 ```
 
+### Docker test
+
+Create .env.test file  
+
+example:  
+
+```text
+FLASK_APP=main
+FLASK_ENV=test
+DATABASE_URL=mysql+pymysql://root:password@testdb:3306/TestDB
+```
+
 ### Docker prod
 
 Create .env.pod file  
@@ -49,6 +61,15 @@ $ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up
 $ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down
 ```
 
+### Test
+
+```bash
+# start
+$ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compose.test.yaml up
+# close
+$ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compose.test.yaml down
+```
+
 ### Prod
 
 ```bash
@@ -64,12 +85,23 @@ $ docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml down
 # start dev
 $ make dev
 
+# start test
+$ make test
+
 # start prod
 $ make prod
 
 # stop
 $ make clean
 ```
+
+### Run test in docker compose (Test)
+
+```shell
+$ docker exec -it {project name}_backend_1 /bin/bash
+root@xxxxxxxxxx:/project# poetry run flask test
+```
+
 
 ## Flask command
 
@@ -94,6 +126,15 @@ $ flask test
 $ flask db migrate
 # Migrate db
 $ flask db upgrade
+```
+
+## Poetry
+
+```bash
+# install dependencies
+$ poetry install
+# run shell
+$ poetry shell
 ```
 
 ## Reference

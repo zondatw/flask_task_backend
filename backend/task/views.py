@@ -55,7 +55,7 @@ def create_task():
         data = serializer.load(request.json)
     except ValidationError as err:
         current_app.logger.error(f"Create task error: {err}")
-        return Response(str(err), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
+        return Response(str(err).replace("'", '"'), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
 
     task = Task.create(name=data["name"])
     response_data = {
@@ -92,7 +92,7 @@ def update_task():
         data = serializer.load(request.json)
     except ValidationError as err:
         current_app.logger.error(f"update task error: {err}")
-        return Response(str(err), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
+        return Response(str(err).replace("'", '"'), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
 
     task = Task.query.get(data["id"])
     if not task:
