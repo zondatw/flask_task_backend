@@ -1,0 +1,10 @@
+FROM python:3.7
+ENV PYTHONUNBUFFERED 1
+
+# Install poetry
+RUN python -m pip install --upgrade pip
+RUN pip install poetry
+
+# Create work directory
+RUN mkdir /project
+WORKDIR /project

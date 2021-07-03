@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  db:
+    ports:
+      - 3306:3306
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    stdin_open: true
+    tty: true
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env.dev
+    volumes:
+      - type: bind
+        source: ./
+        target: /project/
+    entrypoint: ["/bin/sh","-c"]
+    command:
+      - |
+        poetry install
+        poetry run flask db upgrade
+        poetry run flask run --host=0.0.0.0
+    links:
+      - db
+    depends_on:
+      - db

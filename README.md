@@ -2,22 +2,73 @@
 
 ## Prerequisites
 
+### Local
+
 Create .env file  
 
 example:  
 
-```
+```text
 FLASK_APP=main
 FLASK_ENV=development
 DATABASE_URL=mysql+pymysql://root:password@localhost:3306/ExerciseDB
 ```
 
+### Docker dev
+
+Create .env.dev file  
+
+example:  
+
+```text
+FLASK_APP=main
+FLASK_ENV=development
+DATABASE_URL=mysql+pymysql://root:password@db:3306/ExerciseDB
+```
+
+### Docker prod
+
+Create .env.pod file  
+
+example:  
+
+```text
+FLASK_APP=main
+FLASK_ENV=production
+DATABASE_URL=mysql+pymysql://root:password@db:3306/ExerciseDB
+```
+
 ## Docker
 
-Create Mysql from Docker-compose file  
+### Dev
 
 ```bash
-$ docker-compose up
+# start
+$ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up
+# close
+$ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down
+```
+
+### Prod
+
+```bash
+# start
+$ docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up
+# close
+$ docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml down
+```
+
+### Makefile
+
+```bash
+# start dev
+$ make dev
+
+# start prod
+$ make prod
+
+# stop
+$ make clean
 ```
 
 ## Flask command
