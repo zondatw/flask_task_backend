@@ -19,6 +19,7 @@ class TestTaskAPI:
 
         response = client.get("/tasks")
         assert response.status_code == 200
+        assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == { "result": data_list}
 
     def test_create_task(self, client):
@@ -31,6 +32,7 @@ class TestTaskAPI:
             "name": new_test_data["name"],
         })
         assert response.status_code == 201
+        assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == { "result": new_test_data}
 
     def test_create_task_validate_error(self, client):
@@ -43,6 +45,7 @@ class TestTaskAPI:
             "name": new_test_data["name"],
         })
         assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == {"name": ["Length must be between 1 and 100."]}
 
     def test_update_task(self, client):
@@ -59,6 +62,7 @@ class TestTaskAPI:
             "status": updated_test_data["status"],
         })
         assert response.status_code == 200
+        assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == updated_test_data
 
     def test_update_task_id_not_exist(self, client):
@@ -75,6 +79,7 @@ class TestTaskAPI:
             "status": updated_test_data["status"],
         })
         assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == {"id": ["not exist"]}
 
     def test_update_task_validate_error(self, client):
@@ -91,6 +96,7 @@ class TestTaskAPI:
             "status": updated_test_data["status"],
         })
         assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == {"status": ["Must be greater than or equal to 0 and less than or equal to 1."], "name": ["Length must be between 1 and 100."]}
 
     def test_delete_task(self, client):
@@ -99,6 +105,7 @@ class TestTaskAPI:
             "id": 1,
         })
         assert response.status_code == 200
+        assert response.headers["Content-Type"] == "application/json"
 
     def test_delete_task_id_not_exist(self, client):
         Task(name="delete_me").save()
@@ -106,4 +113,5 @@ class TestTaskAPI:
             "id": 2,
         })
         assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == {"id": ["not exist"]}
