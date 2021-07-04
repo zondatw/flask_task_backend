@@ -38,14 +38,11 @@ def db(app):
     _db.drop_all()
 
 @pytest.fixture()
-def client():
+def client(app):
     """client
 
     Create client for the tests
     """
-    app = create_app()
-    app.config['TESTING'] = True
-
     with app.app_context():
         with app.test_client() as client:
             yield client

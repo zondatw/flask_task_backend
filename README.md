@@ -12,6 +12,7 @@ example:
 FLASK_APP=main
 FLASK_ENV=development
 DATABASE_URL=mysql+pymysql://root:password@localhost:3306/ExerciseDB
+TEST_DATABASE_URL=mysql+pymysql://root:password@testdb:3306/TestDB
 ```
 
 ### Docker dev
@@ -24,18 +25,7 @@ example:
 FLASK_APP=main
 FLASK_ENV=development
 DATABASE_URL=mysql+pymysql://root:password@db:3306/ExerciseDB
-```
-
-### Docker test
-
-Create .env.test file  
-
-example:  
-
-```text
-FLASK_APP=main
-FLASK_ENV=test
-DATABASE_URL=mysql+pymysql://root:password@testdb:3306/TestDB
+TEST_DATABASE_URL=mysql+pymysql://root:password@testdb:3306/TestDB
 ```
 
 ### Docker prod
@@ -61,15 +51,6 @@ $ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up
 $ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down
 ```
 
-### Test
-
-```bash
-# start
-$ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compose.test.yaml up
-# close
-$ docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compose.test.yaml down
-```
-
 ### Prod
 
 ```bash
@@ -85,9 +66,6 @@ $ docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml down
 # start dev
 $ make dev
 
-# start test
-$ make test
-
 # start prod
 $ make prod
 
@@ -95,7 +73,7 @@ $ make prod
 $ make clean
 ```
 
-### Run test in docker compose (Test)
+### Run test in docker compose
 
 ```shell
 $ docker exec -it {project name}_backend_1 /bin/bash
