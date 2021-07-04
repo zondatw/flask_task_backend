@@ -65,8 +65,8 @@ def create_task():
     return Response(json.dumps(response_data), status=HTTPStatus.CREATED, mimetype="application/json")
 
 
-@blueprint.route("/task/", methods=["PUT"])
-def update_task():
+@blueprint.route("/task/<id>", methods=["PUT"])
+def update_task(id):
     """Update task
 
     Update task's name and status by id
@@ -93,8 +93,11 @@ def update_task():
     except ValidationError as err:
         current_app.logger.error(f"update task error: {err}")
         return Response(str(err).replace("'", '"'), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
+    
+    if str(id) != str(data["id"]):
+        return Response(json.dumps({"id": ["not match"]}), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
 
-    task = Task.query.get(data["id"])
+    task = Task.query.get(id)
     if not task:
         return Response(json.dumps({"id": ["not exist"]}), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
     if "name" in data:
@@ -108,29 +111,18 @@ def update_task():
     return Response(json.dumps(response_data), status=HTTPStatus.OK, mimetype="application/json")
 
 
-@blueprint.route("/task/", methods=["DELETE"])
-def delete_task():
+@blueprint.route("/task/<id>", methods=["DELETE"])
+def delete_task(id):
     """Delete task
 
     Delete task by id
 
     example:
-        request
-        {
-            "id": 1
-        }
-
         response status code 200
     """
     current_app.logger.info(f"delete task request data: {request.json}")
-    serializer = TaskDetailSerializer()
-    try:
-        data = serializer.load(request.json)
-    except ValidationError as err:
-        current_app.logger.error(f"delete task error: {err}")
-        return Response(str(err), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
     
-    task = Task.query.get(data["id"])
+    task = Task.query.get(id)
     if not task:
         return Response(json.dumps({"id": ["not exist"]}), status=HTTPStatus.BAD_REQUEST, mimetype="application/json")
     task.delete()

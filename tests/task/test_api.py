@@ -56,7 +56,7 @@ class TestTaskAPI:
             "name": "updated_test",
             "status": 1,
         }
-        response = client.put("/task/", json={
+        response = client.put(f"/task/{updated_test_data['id']}", json={
             "id": updated_test_data["id"],
             "name": updated_test_data["name"],
             "status": updated_test_data["status"],
@@ -73,7 +73,7 @@ class TestTaskAPI:
             "name": "updated_test",
             "status": 1,
         }
-        response = client.put("/task/", json={
+        response = client.put(f"/task/{updated_test_data['id']}", json={
             "id": updated_test_data["id"],
             "name": updated_test_data["name"],
             "status": updated_test_data["status"],
@@ -81,6 +81,23 @@ class TestTaskAPI:
         assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == {"id": ["not exist"]}
+
+    def test_update_task_id_not_match(self, client):
+        Task(name="update_me").save()
+
+        updated_test_data = {
+            "id": 1,
+            "name": "updated_test",
+            "status": 1,
+        }
+        response = client.put(f"/task/{updated_test_data['id'] + 1}", json={
+            "id": updated_test_data["id"],
+            "name": updated_test_data["name"],
+            "status": updated_test_data["status"],
+        })
+        assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
+        assert json.loads(response.data) == {"id": ["not match"]}
 
     def test_update_task_validate_error(self, client):
         Task(name="update_me").save()
@@ -90,7 +107,7 @@ class TestTaskAPI:
             "name": "t" * 101,
             "status": 2,
         }
-        response = client.put("/task/", json={
+        response = client.put(f"/task/{updated_test_data['id']}", json={
             "id": updated_test_data["id"],
             "name": updated_test_data["name"],
             "status": updated_test_data["status"],
@@ -100,18 +117,14 @@ class TestTaskAPI:
         assert json.loads(response.data) == {"status": ["Must be greater than or equal to 0 and less than or equal to 1."], "name": ["Length must be between 1 and 100."]}
 
     def test_delete_task(self, client):
-        Task(name="delete_me").save()
-        response = client.delete("/task/", json={
-            "id": 1,
-        })
+        task = Task(name="delete_me").save()
+        response = client.delete(f"/task/{task.id}")
         assert response.status_code == 200
         assert response.headers["Content-Type"] == "application/json"
 
     def test_delete_task_id_not_exist(self, client):
-        Task(name="delete_me").save()
-        response = client.delete("/task/", json={
-            "id": 2,
-        })
+        task = Task(name="delete_me").save()
+        response = client.delete(f"/task/{task.id + 1}")
         assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
         assert json.loads(response.data) == {"id": ["not exist"]}
